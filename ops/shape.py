@@ -12,7 +12,9 @@ class Tranpose(Op):
     self.out = None
 
   def forward(self):
-    self.out = Tensor(np.transpose(self.a, self.axes), (self.a,), self)
+    data = np.transpose(self.a, self.axes)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -34,7 +36,9 @@ class Swapaxes(Op):
     self.out = None
 
   def forward(self):
-    self.out = Tensor(np.swapaxes(self.a, self.axis1, self.axis2), (self.a,), self)
+    data = np.swapaxes(self.a, self.axis1, self.axis2)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -45,7 +49,9 @@ class Ravel(UnaryOp):
   OP = 'ravel'
 
   def forward(self):
-    self.out = Tensor(np.ravel(self.a), (self.a,), self)
+    data = np.ravel(self.a)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -61,7 +67,9 @@ class Reshape(Op):
     self.out = None
   
   def forward(self):
-    self.out = Tensor(np.reshape(self.a, self.new_shape), (self.a,), self)
+    data = np.reshape(self.a, self.new_shape)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -77,7 +85,9 @@ class Squeeze(Op):
     self.out = None
   
   def forward(self):
-    self.out = Tensor(np.squeeze(self.a, self.axis), (self.a,), self)
+    data = np.squeeze(self.a, self.axis)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -93,7 +103,9 @@ class Expanddims(Op):
     self.out = None
   
   def forward(self):
-    self.out = Tensor(np.expand_dims(self.a, self.axis), (self.a,), self)
+    data = np.expand_dims(self.a, self.axis)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
   
   def backward(self):
@@ -109,7 +121,9 @@ class Concat(Op):
     self.out = None
 
   def forward(self):
-    self.out = Tensor(np.concat(self.xs, self.axis), self.xs, self)
+    data = np.concat(self.xs, self.axis)
+    self.out = Tensor(data, self.xs, self)
+
     return self.out
   
   def backward(self):

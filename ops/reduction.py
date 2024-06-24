@@ -9,8 +9,9 @@ class Sum(ReduceOp):
   OP = 'sum'
 
   def forward(self):
-    self.out = Tensor(np.sum(self.a.data, axis=self.axis, keepdims=self.keepdims), 
-                      (self.a,), self)
+    data = np.sum(self.a.data, axis=self.axis, keepdims=self.keepdims)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -22,8 +23,9 @@ class Mean(ReduceOp):
   OP = 'mean'
 
   def forward(self):
-    self.out = Tensor(np.mean(self.a.data, axis=self.axis, keepdims=self.keepdims), 
-                      (self.a,), self)
+    data = np.mean(self.a.data, axis=self.axis, keepdims=self.keepdims)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -41,16 +43,21 @@ class Max(ReduceOp):
   OP = 'max'
 
   def forward(self):
-    self.out = Tensor(np.max(self.a.data, axis=self.axis, keepdims=self.keepdims), 
-                      (self.a,), self)
+    data = np.max(self.a.data, axis=self.axis, keepdims=self.keepdims)
+    self.out = Tensor(data, (self.a,), self)
     
     return self.out
 
   def backward(self):
     indices = np.argmax(self.a.data, axis=self.axis, keepdims=True)
-    grad = expand_reduced_dims(self.out.grad, indices.shape, self.axis, self.keepdims)
-    grad += np.take_along_axis(self.a.grad, indices, axis=self.axis)
-    np.put_along_axis(self.self.a.grad, indices, grad, axis=self.axis)
+    grad = expand_reduced_dims(
+      self.out.grad, indices.shape,
+      self.axis, self.keepdims
+    )
+    curr_grad = np.take_along_axis(self.a.grad, indices, axis=self.axis)
+    updated_grad = grad + curr_grad
+
+    np.put_along_axis(self.self.a.grad, indices, updated_grad, axis=self.axis)
 
 
 class Min(ReduceOp):
@@ -63,6 +70,11 @@ class Min(ReduceOp):
 
   def backward(self):
     indices = np.argmin(self.a.data, axis=self.axis, keepdims=True)
-    grad = expand_reduced_dims(self.out.grad, indices.shape, self.axis, self.keepdims)
-    grad += np.take_along_axis(self.a.grad, indices, axis=self.axis)
-    np.put_along_axis(self.self.a.grad, indices, grad, axis=self.axis)
+    grad = expand_reduced_dims(
+      self.out.grad, indices.shape,
+      self.axis, self.keepdims
+    )
+    curr_grad = np.take_along_axis(self.a.grad, indices, axis=self.axis)
+    updated_grad = grad + curr_grad
+
+    np.put_along_axis(self.self.a.grad, indices, updated_grad, axis=self.axis)

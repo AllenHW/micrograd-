@@ -64,8 +64,9 @@ class Pow(BinaryOp):
   OP = '^'
 
   def forward(self):
-    self.out = Tensor(self.a.data ** self.b.data, 
-                      (self.a, self.b), self)
+    data = self.a.data ** self.b.data
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):

@@ -10,7 +10,9 @@ class Matmul(BinaryOp):
   OP = '@'
 
   def forward(self):
-    self.out = Tensor(self.a.data @ self.b.data, (self.a, self.b), self)
+    data = self.a.data @ self.b.data
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):
@@ -53,30 +55,27 @@ class Einsum():
 
   def _parse_subscripts(self):
     split = self.subscripts.split('->')
+
+    in_labels = [x.strip() for x in split[0]]
+    # implicit case
     if len(split) == 1:
-      in_labels = [x.strip() for x in self.subscripts.split(',')]
-      char_counts = {}
-      for label in in_labels:
-        for c in label:
-          char_counts[c] = char_counts.get(c, 0) + 1
+      char_counts = Counter(c for label in in_labels for c in label)
       for c, count in char_counts.items():
         if count > 1:
           del char_counts[c]
       out_label = ''.join(sorted(char_counts.keys()))
+    # explict case
     else:
       assert len(split) == 2
-      in_labels, out_label = split
-      out_label = out_label.strip()
-      in_labels = [x.strip() for x in in_labels.split(',')]
+      out_label = split[1].strip()
 
     assert len(in_labels) == len(self.operands)
     return in_labels, out_label
 
   def forward(self):
-    self.out = Tensor(
-      np.einsum(self.subscripts, *self.operands), 
-      self.operands, self
-    )
+    data = np.einsum(self.subscripts, *self.operands)
+    self.out = Tensor(data, self.operands, self)
+
     return self.out
 
   def _handle_repeated_dims(label, operand):

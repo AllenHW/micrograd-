@@ -9,7 +9,9 @@ class Log(UnaryOp):
   OP = 'log'
 
   def forward(self):
-    self.out = Tensor(log_wo_warning(self.a.data), (self.a,), self)
+    data = log_wo_warning(self.a.data)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -23,7 +25,9 @@ class Exp(UnaryOp):
   OP = 'exp'
 
   def forward(self):
-    self.out = Tensor(np.exp(self.a.data), (self.a,), self)
+    data = np.exp(self.a.data)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -37,7 +41,9 @@ class Sin(UnaryOp):
   OP = 'sin'
 
   def forward(self):
-    self.out = Tensor(np.sin(self.a.data), (self.a,), self)
+    data = np.sin(self.a.data)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -48,7 +54,9 @@ class Cos(UnaryOp):
   OP = 'cos'
 
   def forward(self):
-    self.out = Tensor(np.cos(self.a.data), (self.a,), self)
+    data = np.cos(self.a.data)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -59,7 +67,9 @@ class Tan(UnaryOp):
   OP = 'tan'
 
   def forward(self):
-    self.out = Tensor(np.tan(self.a.data), (self.a,), self)
+    data = np.tan(self.a.data)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -73,7 +83,9 @@ class Relu(UnaryOp):
   OP = 'relu'
 
   def forward(self):
-    self.out = Tensor(np.max(self.a.data, 0), (self.a,), self)
+    data = np.max(self.a.data, 0)
+    self.out = Tensor(data, (self.a,), self)
+
     return self.out
 
   def backward(self):
@@ -87,8 +99,8 @@ class Tanh(UnaryOp):
   OP = 'tanh'
 
   def forward(self):
-    t = (np.exp(2 * self.a.data) - 1) / (np.exp(2 * self.a.data) + 1)
-    self.out = Tensor(t, (self.a,), self)
+    data = (np.exp(2 * self.a.data) - 1) / (np.exp(2 * self.a.data) + 1)
+    self.out = Tensor(data, (self.a,), self)
     return self.out
 
   def backward(self):
