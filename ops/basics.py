@@ -8,8 +8,9 @@ class Add(BinaryOp):
   OP = '+'
 
   def forward(self):
-    self.out = Tensor(self.a.data + self.b.data, 
-                      (self.a, self.b), self)
+    data = self.a.data + self.b.data
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):
@@ -20,8 +21,9 @@ class Subtract(BinaryOp):
   OP = '-'
 
   def forward(self):
-    self.out = Tensor(self.a.data - self.b.data, 
-                      (self.a, self.b), self)
+    data = self.a.data - self.b.data
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):
@@ -33,8 +35,9 @@ class Multiply(BinaryOp):
   OP = '*'
 
   def forward(self):
-    self.out = Tensor(self.a.data * self.b.data, 
-                      (self.a, self.b), self)
+    data = self.a.data * self.b.data
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):
@@ -46,8 +49,9 @@ class Divide(BinaryOp):
   OP = '/'
 
   def forward(self):
-    self.out = Tensor(div_wo_warning(self.a.data, self.b.data),
-                      (self.a, self.b), self)
+    data = div_wo_warning(self.a.data, self.b.data)
+    self.out = Tensor(data, (self.a, self.b), self)
+
     return self.out
 
   def backward(self):
