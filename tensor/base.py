@@ -5,7 +5,7 @@ class Tensor:
     self.data = data
     self._prev = set(_prev)
     self._op = _op
-    self.grad = np.zeros_like(data.shape)
+    self.grad = None
 
   def __repr__(self):
     return f"Tensor(data={self.data}, grad={self.grad})"

@@ -1,7 +1,13 @@
 import numpy as np
 from base import Tensor
-from ops import *
-
+from ops import (
+  Add, Subtract, Multiply, Divide, Pow,  # noqa: F401
+  Slice, Assign, MaskedFill, Lookup,  # noqa: F401
+  Sum, Mean, Max, Min,  # noqa: F401
+  Tranpose,  Reshape, Swapaxes, Ravel, Squeeze, Expanddims, Concat,  # noqa: F401
+  Matmul, Einsum,  # noqa: F401
+  Log, Exp, Sin, Cos, Tan, Relu, Tanh  # noqa: F401
+)
 
 
 class TensorImpl(Tensor):
@@ -56,6 +62,10 @@ class TensorImpl(Tensor):
 
   def _backward(self):
     if self.op is not None:
+      # compute gradient for prev nodes
+      for t in self._prev:
+        if t.grad is None:
+          t.grad = np.zeros_like(t.data.shape)
       self.op.backward()
 
   def backward(self):
