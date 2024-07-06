@@ -81,6 +81,8 @@ torch_y.backward()
 assert np.allclose(x.grad, torch_x.grad.numpy())
 ```
 
+And other operations are tested with PyTorch [](https://github.com/AllenHW/npgrad/blob/main/tests/ops.py).
+
 ### Todo
 
 - [ ] Support comparison operators like `==`, `!=`, `<`, `<=`, `>`, `>=`
