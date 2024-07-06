@@ -61,6 +61,34 @@ torch_z.backward()
 assert np.allclose(x.grad, torch_x.grad.numpy())
 ```
 
+#### Conv2D
+
+```python
+import torch.nn.functional as F
+
+x = npg.randn(2, 5, 28, 28)  # (batch_size, in_channels, height, width)
+weight = npg.randn(3, 5, 3, 3)  # ( out_channels, in_channels, kernel_height, kernel_width)
+bias = npg.randn(3)  # (out_channels,)
+
+# Forward pass with npg.conv2d
+y = npg.conv2d(x, weight, bias, stride=1, padding=1)
+z = npg.sum(y)
+z.backward()
+
+# Compute gradients with PyTorch
+torch_x = torch.tensor(x.data, requires_grad=True)
+torch_weight = torch.tensor(weight.data, requires_grad=True)
+torch_bias = torch.tensor(bias.data, requires_grad=True)
+
+torch_y = F.conv2d(torch_x, torch_weight, torch_bias, stride=1, padding=1)
+torch_z = torch.sum(torch_y)
+torch_z.backward()
+
+# Compare gradients
+assert np.allclose(x.grad, torch_x.grad.numpy())
+assert np.allclose(weight.grad, torch_weight.grad.numpy())
+assert np.allclose(bias.grad, torch_bias.grad.numpy())
+```
 
 #### Advanced Indexing
 
@@ -83,10 +111,11 @@ torch_y.backward()
 assert np.allclose(x.grad, torch_x.grad.numpy())
 ```
 
+
 And other operations are tested with PyTorch [github.com/AllenHW/npgrad/blob/main/tests/ops.py](https://github.com/AllenHW/npgrad/blob/main/tests/ops.py).
 
 ### Todo
 
 - [ ] Support comparison operators like `==`, `!=`, `<`, `<=`, `>`, `>=`
 - [ ] Support inter-operation with Python and Numpy objects for `+`, `-`, `*`, `/`, `**`, `@`
-- [ ] Add checks so backward() is only called for scalars
+- [ ] Add checks so ``backward()` can only be called for scalars
