@@ -31,10 +31,12 @@ assert np.allclose(z.data, torch_z.detach().numpy())
 
 ### Autograd
 
-Npgrad supports autograd. All the backward operations are implemented in Numpy. It handles broadcasting the same way as Numpy and Pytorch.
+Npgrad supports autograd. All the backward operations are implemented in Numpy. It handles broadcasting the same way as Numpy and PyTorch.
 
 Most notable it does autograd for operations like  `advanced indexing`, `einsum`, `matmul`, `max_pool2d`, `avg_pool2d`, `conv2d`, with all the edge cases supported by Numpy.
 
+
+#### Einsum
 
 ```python
 x = npg.randn(3, 4, 7, 8, 3)
@@ -56,3 +58,31 @@ torch_z.backward()
 # Compare gradients
 assert np.allclose(x.grad, torch_x.grad.numpy())
 ```
+
+
+#### Advanced Indexing
+
+```python
+x = npg.randn(10, 8, 12)
+indices1 = np.random.randint(0, 10, (3, 2))
+indices2 = np.random.randint(0, 8, (3, 2))
+
+y = x[indices1, indices2, 2:8:2]
+y = npg.sum(y)
+y.backward()
+
+# Compute gradients with torch
+torch_x = torch.tensor(x.data, requires_grad=True)
+torch_y = torch_x[indices1, indices2, 2:8:2]
+torch_y = torch.sum(torch_y)
+torch_y.backward()
+
+# Compare gradients
+assert np.allclose(x.grad, torch_x.grad.numpy())
+```
+
+### Todo
+
+- [ ] Support comparison operators like `==`, `!=`, `<`, `<=`, `>`, `>=`
+- [ ] Support inter-operation with Python and Numpy objects for `+`, `-`, `*`, `/`, `**`, `@`
+- [ ] Add checks so backward() is only called for scalars
