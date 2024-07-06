@@ -38,9 +38,9 @@ assert np.allclose(z.data, torch_z.detach().numpy())
 
 ### Auto Differentiation
 
-`npgrad` supports auto differentiation. All the differentations are implemented natively in Numpy. It handles broadcasting the same way as Numpy and PyTorch.
+`npgrad` supports auto differentiation for all operations exposed in the API. The differentations are implemented natively in Numpy. It handles broadcasting the same way as Numpy and PyTorch.
 
-For example, it does aut-diff for operations like  `advanced indexing`, `einsum`, `matmul`, `max_pool2d`, `avg_pool2d`, and `conv2d`, with all the edge cases supported by Numpy. You can check out the implementations in the [npgrad/ops](https://github.com/AllenHW/npgrad/blob/main/npgrad/ops/) folder.
+You can check out the implementations in the [npgrad/ops](https://github.com/AllenHW/npgrad/blob/main/npgrad/ops/) folder.
 
 
 #### Einsum
