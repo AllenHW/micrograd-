@@ -2,6 +2,11 @@
 
 A small auto differentiation library built with just Numpy. Inspired by [micrograd](https://github.com/karpathy/micrograd).
 
+### Installation
+In the project root directory, run
+```
+pip install -e .
+```
 
 ### Numpy Like API
 
