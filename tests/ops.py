@@ -131,8 +131,6 @@ def _test_einsum(shapes, subscripts):
     _allclose(x.grad, xt.grad.numpy()) for x, xt, in zip(xs, xts)
   ])
 
-
-
 def _test_pooling(shape, k, s, p, d, pooling):
   _x = np.random.randn(*shape)
 
@@ -155,14 +153,13 @@ def _test_pooling(shape, k, s, p, d, pooling):
   assert _allclose(x.grad, xt.grad.numpy())
 
 
-
 def _test_conv2d(shape, k, s, p, d):
   out_channel = np.random.randint(4, 15)
   in_channel = shape[1]
 
   kh, kw = (k, k) if isinstance(k, int) else (k[0], k[1])
   _x = np.random.randn(*shape)
-  _W = np.random.randn(in_channel, out_channel, kh, kw)
+  _W = np.random.randn(out_channel, in_channel, kh, kw)
   _b = np.random.randn(out_channel)
 
   x = npg.ndarray(_x)
@@ -174,7 +171,7 @@ def _test_conv2d(shape, k, s, p, d):
   bt = torch.tensor(_b, requires_grad=True)
 
   c = npg.conv2d(x, W, b, s, p, d)
-  ct = torch.nn.functional.conv2d(xt, Wt.permute(1, 0, 2, 3), bt, s, p, d)
+  ct = torch.nn.functional.conv2d(xt, Wt, bt, s, p, d)
 
   _y = np.random.randn(*ct.shape)
   y = npg.ndarray(_y)
@@ -186,6 +183,8 @@ def _test_conv2d(shape, k, s, p, d):
   assert _allclose(x.grad, xt.grad.numpy())
   assert _allclose(W.grad, Wt.grad.numpy())
   assert _allclose(b.grad, bt.grad.numpy())
+
+
 
 @pytest.mark.parametrize("shape", [
     (()),

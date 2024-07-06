@@ -172,9 +172,9 @@ class Conv2D(PoolingOp):
     x_col = im2cols(self.x.data, self.k, self.s, self.p, self.d)
     self._cached_x_col = x_col
 
-    _, out_C, _, _ = self.W.shape
+    out_C, _ , _, _ = self.W.shape
     # 1 x out_C x (in_C * kh * kw) 
-    W_col = self.W.data.transpose(1, 0, 2, 3).reshape(out_C, -1)[np.newaxis, ...]
+    W_col = self.W.data.reshape(out_C, -1)[np.newaxis, ...]
     # 1 x out_C x 1
     b = self.b.data.reshape(1, out_C, 1)
 
@@ -185,12 +185,12 @@ class Conv2D(PoolingOp):
     return self.out
   
   def backward(self):
-    in_C, out_C, kh, kw = self.W.shape
+    out_C, in_C, kh, kw = self.W.shape
 
     # B x out_C x (out_H * out_W)
     out_col = self.out.grad.reshape(-1, out_C, self.out_H * self.out_W) 
     # 1 x out_C x (in_C * kh * kw) 
-    W_col = self.W.data.transpose(1, 0, 2, 3).reshape(out_C, -1)[np.newaxis, ...]
+    W_col = self.W.data.reshape(out_C, -1)[np.newaxis, ...]
     # B x (in_C * kh * kw) x (out_H * out_W)
     x_col = self._cached_x_col
 
@@ -198,7 +198,7 @@ class Conv2D(PoolingOp):
     W_grad_col = out_col @ np.swapaxes(x_col, 1, 2)
     W_grad_col = np.sum(W_grad_col, axis=0)
     # in_C x out_C x kh x kw
-    W_grad = W_grad_col.reshape(out_C, in_C, kh, kw).transpose(1, 0, 2, 3)
+    W_grad = W_grad_col.reshape(out_C, in_C, kh, kw)
 
     # ... (in_C * kh * kw) x out_C @ ... out_C x (out_H * out_W) 
     # -> B x (in_C * kh * kw) x (out_H * out_W) 
